@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #013220; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' opacity='0.2'%3E%3Cg transform='translate(20,20) scale(0.6)' stroke='%23ffffff' stroke-width='3' fill='none'%3E%3Cellipse cx='50' cy='50' rx='20' ry='40' transform='rotate(45 50 50)'/%3E%3Cellipse cx='50' cy='50' rx='20' ry='40' transform='rotate(-45 50 50)'/%3E%3Ccircle cx='50' cy='50' r='5' fill='%23ffffff'/%3E%3C/g%3E%3Cg transform='translate(120,100) scale(0.7)' stroke='%23ffa500' stroke-width='3' fill='none'%3E%3Cpath d='M20,80 L20,60 L70,10 L90,30 L40,80 Z'/%3E%3Cpath d='M70,10 L80,0 L100,20 L90,30'/%3E%3C/g%3E%3Cg transform='translate(10,130) scale(0.6)' stroke='%23ffffff' stroke-width='3' fill='none'%3E%3Cpath d='M10,20 L50,20 L50,60 L10,60 Z'/%3E%3Cpath d='M50,20 L90,20 L90,60 L50,60 Z'/%3E%3Cpath d='M10,30 L50,30 M10,40 L50,40 M50,30 L90,30 M50,40 L90,40'/%3E%3C/g%3E%3Cg transform='translate(130,10) scale(0.6)' stroke='%23ffa500' stroke-width='3' fill='none'%3E%3Cpath d='M40,10 C20,10 20,40 30,50 L30,70 L50,70 L50,50 C60,40 60,10 40,10 Z'/%3E%3Cpath d='M25,75 L55,75 M35,85 L45,85'/%3E%3C/g%3E%3C/svg%3E");
+            margin: 0; 
+            padding: 20px 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            color: #ffffff; 
+            overflow-x: hidden; 
+        }
+
+        /* Menu / Landing Page Screen */
+        #landing-page {
+            text-align: center;
+            background: #222222;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border: 5px solid #ff0000;
+            width: 95%;
+            max-width: 900px; /* Widened to accommodate 4 columns */
+            z-index: 10;
+        }
+
+        #landing-page h1 {
+            font-size: 32px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Responsive 8-Button Grid (Desktop: 4x2, Mobile: 2x4) */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .set-btn {
+            aspect-ratio: 1 / 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px; 
+            font-weight: 900; 
+            color: #ffffff; 
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            padding: 10px;
+            border: none;
+        }
+
+        /* 8 Distinct Filled Solid Fancy Color Backgrounds */
+        .btn-set1 { background-color: #00cbcb; } /* Cyan */
+        .btn-set2 { background-color: #ff9f43; } /* Orange */
+        .btn-set3 { background-color: #ff007f; } /* Magenta */
+        .btn-set4 { background-color: #8a2be2; } /* Purple */
+        .btn-set5 { background-color: #39ff14; } /* Neon Green */
+        .btn-set6 { background-color: #ff3333; } /* Bright Red */
+        .btn-set7 { background-color: #1e90ff; } /* Dodger Blue */
+        .btn-set8 { background-color: #ffbf00; } /* Amber Yellow */
+
+        .set-btn:hover {
+            transform: scale(1.04);
+            filter: brightness(1.15);
+        }
+
+        .btn-sub {
+            font-size: 14px; 
+            margin-top: 8px;
+            color: #ffffff;
+            font-weight: bold;
+            opacity: 0.9;
+        }
+
+        /* Stats Text inside the button */
+        .btn-stats {
+            font-size: 12px;
+            color: #ffffff;
+            margin-top: 10px;
+            background: #000000;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            line-height: 1.3;
+            text-shadow: none;
+            width: 90%;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Main Game Elements */
+        #game-interface { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; position: relative; }
+        
+        #study-title { 
+            position: absolute; 
+            top: 25px; 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: #ffffff; 
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8); 
+            text-align: center; 
+            width: 100%; 
+            pointer-events: none; 
+            z-index: 10; 
+        }
+
+        #top-left-controls { position: absolute; top: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 10; }
+        .control-btn { background: #222222; color: #ffffff; border: 2px solid #ff0000; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+        
+        #stats { position: absolute; top: 20px; right: 20px; font-size: 20px; font-weight: bold; background: #222222; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.5); z-index: 10; }
+        .correct-text { color: #28a745; }
+        .incorrect-text { color: #dc3545; }
+
+        #card-container {
+            width: 90%; max-width: 800px; height: 400px; background-color: #000000; border: 5px solid #ff0000; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center; text-align: center; padding: 30px; cursor: pointer; margin-bottom: 60px; position: relative; z-index: 5; transition: border-color 0.3s ease;
+        }
+
+        #card-text { font-size: 40px; font-weight: bold; line-height: 1.3; color: #ffffff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+        .hl { background-color: #ffff00; color: #000000; text-shadow: none; padding: 0 5px; border-radius: 5px; font-weight: 900; }
+
+        #bottom-controls { position: absolute; bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; z-index: 10; }
+        .action-btn { background: #222222; color: #ffffff; border: 2px solid #ff0000; padding: 12px 18px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; flex: 1 1 auto; max-width: 150px; text-align: center; }
+
+        #end-screen { display: none; background: #222222; padding: 50px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: center; border: 5px solid #ff0000; width: 80%; max-width: 600px; z-index: 5; }
+        .percentage { font-size: 56px; font-weight: bold; color: #ffffff; margin-top: 30px; }
+        .review-btn { background: #00ffff; color: #000; border: none; padding: 15px 30px; font-size: 20px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 20px; display: none; }
+
+        @media (max-width: 768px) {
+            .menu-grid { grid-template-columns: 1fr 1fr; } /* Stack to 2 columns on mobile/tablets */
+            .set-btn { font-size: 22px; }
+            #card-text { font-size: 28px; } 
+            .action-btn { font-size: 14px; } 
+            #study-title { font-size: 18px; top: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Landing Page (Main Menu) -->
+    <div id="landing-page">
+        <h1>Select Study Set</h1>
+        <div class="menu-grid">
+            <button class="set-btn btn-set1" onclick="loadSet(1)">
+                Set 1
+                <span class="btn-sub">Cards 1-16</span>
+                <div id="btn-stats-1" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set2" onclick="loadSet(2)">
+                Set 2
+                <span class="btn-sub">Cards 17-32</span>
+                <div id="btn-stats-2" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set3" onclick="loadSet(3)">
+                Set 3
+                <span class="btn-sub">Cards 33-48</span>
+                <div id="btn-stats-3" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set4" onclick="loadSet(4)">
+                Set 4
+                <span class="btn-sub">Cards 49-64</span>
+                <div id="btn-stats-4" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set5" onclick="loadSet(5)">
+                Set 5
+                <span class="btn-sub">Cards 65-80</span>
+                <div id="btn-stats-5" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set6" onclick="loadSet(6)">
+                Set 6
+                <span class="btn-sub">Cards 81-96</span>
+                <div id="btn-stats-6" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set7" onclick="loadSet(7)">
+                Set 7
+                <span class="btn-sub">Cards 97-112</span>
+                <div id="btn-stats-7" class="btn-stats">No attempts yet</div>
+            </button>
+            <button class="set-btn btn-set8" onclick="loadSet(8)">
+                Set 8
+                <span class="btn-sub">Cards 113-128</span>
+                <div id="btn-stats-8" class="btn-stats">No attempts yet</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Active App Interface -->
+    <div id="game-interface">
+        <div id="study-title">Studying: Card 0 of 0 (Attempted: 0)</div>
+        <div id="top-left-controls">
+            <button id="invert-btn" class="control-btn" onclick="toggleInversion()">Mode: Eng -> Tur</button>
+            <button class="control-btn" onclick="undoAction()">Go Back</button>
+            <button class="control-btn" style="border-color:#ffff00; color:#ffff00;" onclick="goToMenu()">Main Menu</button>
+        </div>
+        <div id="stats">
+            <span class="correct-text">Correct: <span id="score-correct">0</span></span><br>
+            <span class="incorrect-text">Incorrect: <span id="score-incorrect">0</span></span>
+        </div>
+        <div id="card-container" onclick="flipCard()">
+            <div id="card-text">Loading...</div>
+        </div>
+        <div id="bottom-controls">
+            <button class="action-btn" onclick="markAnswer('incorrect')">← Incorrect</button>
+            <button class="action-btn" onclick="flipCard()">↑ Flip</button>
+            <button class="action-btn" onclick="undoAction()">↓ Undo</button>
+            <button class="action-btn" onclick="markAnswer('correct')">Correct →</button>
+        </div>
+        <div id="end-screen">
+            <h1>Set Completed!</h1>
+            <p class="correct-text">Total Correct: <span id="final-correct">0</span></p>
+            <p class="incorrect-text">Total Incorrect: <span id="final-incorrect">0</span></p>
+            <div class="percentage" id="final-percentage">0%</div>
+            <button id="review-failed" class="review-btn" onclick="startFailedReview()">Review Failed Cards</button><br>
+            <button class="control-btn" style="margin-top:20px; border-color:#00ffff" onclick="goToMenu()">Back to Menu</button>
+        </div>
+    </div>
+
+    <script>
+        // Database perfectly split into 16 items per set
+        const allSets = {
+            1: [
+                { eng: "You should <mark class='hl'>either</mark> save money <mark class='hl'>or</mark> sell your house.", tur: "Ya para biriktirmelisin <mark class='hl'>ya da</mark> evini satmalısın." },
+                { eng: "<mark class='hl'>Somehow</mark>, we will close this debt.", tur: "<mark class='hl'>Bir şekilde</mark> bu borcu kapatacağız." },
+                { eng: "The taxi driver took the long road <mark class='hl'>on purpose</mark>.", tur: "Taksi şoförü <mark class='hl'>kasten</mark> uzun yoldan gitti." },
+                { eng: "She could stay under the water for 20 minutes <mark class='hl'>without breathing</mark>.", tur: "<mark class='hl'>Nefes almadan</mark> 20 dakika suyun altında kalabiliyordu." },
+                { eng: "<mark class='hl'>Now</mark>, I can live in another country.", tur: "<mark class='hl'>Şimdi artık</mark> başka bir ülkede yaşayabilirim." },
+                { eng: "He didn't <mark class='hl'>ever</mark> go abroad.", tur: "<mark class='hl'>Hiç</mark> yurtdışına çıkmadı." },
+                { eng: "We can live <mark class='hl'>everywhere but</mark> Turkey.", tur: "<mark class='hl'>Türkiye hariç</mark> her yerde yaşayabiliriz." },
+                { eng: "Some politicians are <mark class='hl'>as</mark> dangerous <mark class='hl'>as</mark> snakes.", tur: "Bazı politikacılar yılanlar <mark class='hl'>kadar</mark> tehlikelidir." },
+                { eng: "You can help somebody, but don't expect a \"thank you\" <mark class='hl'>in return</mark>.", tur: "Birine yardım edebilirsin ama <mark class='hl'>karşılığında</mark> bir \"teşekkür\" bekleme." },
+                { eng: "She had to sell <mark class='hl'>both</mark> her house <mark class='hl'>and</mark> her car.", tur: "<mark class='hl'>Hem</mark> evini <mark class='hl'>hem de</mark> arabasını satmak zorundaydı." },
+                { eng: "They had met each other <mark class='hl'>coincidentally</mark>.", tur: "Birbirleriyle <mark class='hl'>tesadüfen</mark> tanışmışlardı." },
+                { eng: "I can listen to stupid people <mark class='hl'>to some extent</mark>.", tur: "Aptal insanları <mark class='hl'>bir raddeye kadar</mark> dinleyebilirim." },
+                { eng: "She won't be able to find a job <mark class='hl'>even if</mark> she finished the university.", tur: "Üniversiteyi bitirse <mark class='hl'>bile</mark> bir iş bulamayacak." },
+                { eng: "She was spending money like crazy; <mark class='hl'>consequently</mark>, she bankrupted.", tur: "Deli gibi para harcıyordu; <mark class='hl'>sonuç olarak</mark> iflas etti." },
+                { eng: "My father couldn't swim; <mark class='hl'>neither</mark> could my mother.", tur: "Babam yüzemezdi, annem <mark class='hl'>de</mark>." },
+                { eng: "You shouldn't speak <mark class='hl'>on behalf of</mark> your wife.", tur: "Karının <mark class='hl'>adına</mark> konuşmamalısın." }
+            ],
+            2: [
+                { eng: "She was lying <mark class='hl'>as if</mark> there weren't any security cameras.", tur: "<mark class='hl'>Sanki</mark> hiç güvenlik kamerası <mark class='hl'>yokmuş gibi</mark> yalan söylüyordu." },
+                { eng: "<mark class='hl'>Recently</mark>, everybody is trying to leave Turkey.", tur: "<mark class='hl'>Son zamanlarda</mark> herkes Türkiye'den ayrılmaya çalışıyor." },
+                { eng: "<mark class='hl'>In case of</mark> forest fire, Turkey doesn't have enough fire planes.", tur: "Orman yangını <mark class='hl'>durumunda</mark> Türkiye'nin yeterli yangın uçağı yok." },
+                { eng: "<mark class='hl'>According to</mark> the European Union, Turkey won't be able to join European Union.", tur: "Avrupa Birliği'<mark class='hl'>ne göre</mark>, Türkiye Avrupa Birliği'ne katılamayacak." },
+                { eng: "<mark class='hl'>Regarding</mark> her financial status, the government didn't pay for her medicine.", tur: "Finansal durumu <mark class='hl'>göz önüne alındığında</mark>, hükümet onun ilaçlarını ödemedi." },
+                { eng: "The Turkish doctors are leaving the country; <mark class='hl'>in the meantime</mark>, Syrian doctors are coming to Turkey.", tur: "Türk doktorlar ülkeyi terk ediyor; <mark class='hl'>bu arada</mark> Suriyeli doktorlar Türkiye'ye geliyor." },
+                { eng: "<mark class='hl'>In terms of</mark> success, nobody is better than Lionel Messi.", tur: "Başarı <mark class='hl'>açısından</mark> hiç kimse Lionel Messi'den daha iyi değildir." },
+                { eng: "<mark class='hl'>Compared to</mark> Maradona, Lionel Messi is more skillful.", tur: "Maradona'<mark class='hl'>ya kıyasla</mark>, Lionel Messi daha yeteneklidir." },
+                { eng: "They won't be able to rule Turkey <mark class='hl'>for good</mark>.", tur: "Türkiye'yi <mark class='hl'>temelli (sonsuza kadar)</mark> yönetemeyecekler." },
+                { eng: "Everybody likes Lionel Messi; <mark class='hl'>as a matter of fact</mark>, Cristiano Ronaldo is the best player.", tur: "Herkes Lionel Messi'yi sever; <mark class='hl'>işin aslı</mark>, Cristiano Ronaldo en iyi oyuncudur." },
+                { eng: "The coach was <mark class='hl'>so</mark> stubborn <mark class='hl'>that</mark> he didn't give a chance to the new defender.", tur: "Koç <mark class='hl'>o kadar</mark> inattı <mark class='hl'>ki</mark> yeni defansa şans vermedi." },
+                { eng: "<mark class='hl'>Unfortunately</mark>, everybody is unhappy in Turkey.", tur: "<mark class='hl'>Maalesef</mark>, Türkiye'de herkes mutsuz." },
+                { eng: "<mark class='hl'>If only</mark> Beşiktaş can become the champion.", tur: "<mark class='hl'>Keşke</mark> Beşiktaş şampiyon olabilse." },
+                { eng: "I always prefer Fenerbahçe <mark class='hl'>instead of</mark> Galatasaray.", tur: "Her zaman Galatasaray <mark class='hl'>yerine</mark> Fenerbahçe'yi tercih ederim." },
+                { eng: "The teacher was buying gold every month; <mark class='hl'>in this way</mark>, he could buy a house in Istanbul.", tur: "Öğretmen her ay altın alıyordu; <mark class='hl'>bu şekilde</mark> İstanbul'da bir ev alabildi." },
+                { eng: "<mark class='hl'>For the sake of</mark> their children's education, most families in Turkey takes a credit from the banks.", tur: "Çocuklarının eğitiminin <mark class='hl'>uğruna</mark>, Türkiye'deki çoğu aile bankalardan kredi alıyor." }
+            ],
+            3: [
+                { eng: "<mark class='hl'>Based on</mark> the FBI files, the USA Ambassador in Turkey is on Epstein files.", tur: "FBI dosyalarına <mark class='hl'>dayanarak</mark>, Türkiye'deki ABD Büyükelçisi Epstein dosyalarında." },
+                { eng: "It <mark class='hl'>depends on</mark> plane prices if we will go on holiday.", tur: "Tatile gidip gidemeyeceğimiz uçak fiyatlarına <mark class='hl'>bağlıdır</mark>." },
+                { eng: "The government can check every financial transaction <mark class='hl'>via</mark> MASAK.", tur: "Hükümet her finansal işlemi MASAK <mark class='hl'>aracılığıyla</mark> kontrol edebilir." },
+                { eng: "<mark class='hl'>Keep me posted</mark> until you check in your hotel.", tur: "Otele giriş yapana kadar beni <mark class='hl'>haberdar et</mark>." },
+                { eng: "You should put money in your account and apply for visa <mark class='hl'>respectively</mark>; never vice versa.", tur: "<mark class='hl'>Sırasıyla</mark> hesabınıza para koymalı ve vizeye başvurmalısınız; asla tam tersi değil." },
+                { eng: "The <mark class='hl'>slip of the tongue</mark> finished his political career.", tur: "<mark class='hl'>Dil sürçmesi</mark> onun siyasi kariyerini bitirdi." },
+                { eng: "I could forget her, but <mark class='hl'>that's where</mark> our memories <mark class='hl'>come in</mark>.", tur: "Onu unutabilirdim ama <mark class='hl'>işte burada</mark> anılarımız <mark class='hl'>devreye giriyor</mark>." },
+                { eng: "<mark class='hl'>From now on</mark>, every Turkish citizen should support Özgür Özel and his friends.", tur: "<mark class='hl'>Şu andan itibaren</mark> her Türk vatandaşı Özgür Özel ve arkadaşlarını desteklemeli." },
+                { eng: "In the World Cup, Turkey will play against USA; the <mark class='hl'>former</mark> is a better team, but the <mark class='hl'>latter</mark> is a more athletic team.", tur: "Dünya Kupası'nda Türkiye, ABD'ye karşı oynayacak; <mark class='hl'>ilki</mark> daha iyi bir takım ama <mark class='hl'>ikincisi</mark> daha atletik bir takım." },
+                { eng: "<mark class='hl'>Now that</mark> the World Cup starts, we will have to wake up very early.", tur: "<mark class='hl'>Artık</mark> Dünya Kupası başladığına <mark class='hl'>göre</mark>, çok erken uyanmak zorunda kalacağız." },
+                { eng: "She had <mark class='hl'>already</mark> sold her car.", tur: "Arabasını <mark class='hl'>zaten</mark> satmıştı." },
+                { eng: "The old guy obeyed AKP; <mark class='hl'>what's more</mark>, he surrendered to his rival.", tur: "Yaşlı adam AKP'ye itaat etti; <mark class='hl'>dahası</mark>, rakibine teslim oldu." },
+                { eng: "<mark class='hl'>Seeing that</mark> you won't be able to pay money, why did you borrow from me?", tur: "<mark class='hl'>Madem ki</mark> parayı ödeyemeyecektin, neden benden borç aldın?" },
+                { eng: "<mark class='hl'>Who would guess</mark> that MHP would defend Apo?", tur: "MHP'nin Apo'yu savunacağını <mark class='hl'>kim tahmin ederdi</mark>?" },
+                { eng: "<mark class='hl'>Thanks to</mark> his wife, he had green passport.", tur: "Karısı <mark class='hl'>sayesinde</mark> yeşil pasaportu vardı." },
+                { eng: "USA is <mark class='hl'>likely to</mark> defeat Turkey in World Cup.", tur: "ABD'nin Dünya Kupası'nda Türkiye'yi yenmesi <mark class='hl'>yüksek ihtimal</mark>." }
+            ],
+            4: [
+                { eng: "I trust him <mark class='hl'>as</mark> a doctor.", tur: "Bir doktor <mark class='hl'>olarak</mark> ona güveniyorum." },
+                { eng: "He doesn't save money, <mark class='hl'>on the contrary</mark> he spends like crazy.", tur: "Para biriktirmiyor, <mark class='hl'>aksine</mark> deli gibi harcıyor." },
+                { eng: "<mark class='hl'>It turns out that</mark> he was lying about his fortune.", tur: "<mark class='hl'>Meğerse</mark> serveti hakkında yalan söylüyormuş." },
+                { eng: "The name of the city is <mark class='hl'>on the tip of my tongue</mark> but I can't remember.", tur: "Şehrin adı <mark class='hl'>dilimin ucunda</mark> ama hatırlayamıyorum." },
+                { eng: "I told the truth, <mark class='hl'>no hard feelings</mark>.", tur: "Gerçeği söyledim, <mark class='hl'>darılmaca yok</mark>." },
+                { eng: "<mark class='hl'>Let alone</mark> we go on holiday, we have to work at the weekends.", tur: "<mark class='hl'>Bırak</mark> tatile gitmeyi, hafta sonları bile çalışmak zorundayız." },
+                { eng: "<mark class='hl'>As far as I know</mark> she's not from the city.", tur: "<mark class='hl'>Bildiğim kadarıyla</mark> o buralı (bu şehirden) değil." },
+                { eng: "Yogurt <mark class='hl'>is good for</mark> your bones.", tur: "Yoğurt kemiklerinize <mark class='hl'>iyi gelir</mark>." },
+                { eng: "He was <mark class='hl'>such a</mark> bad person <mark class='hl'>that</mark> he helped the enemies of the country.", tur: "<mark class='hl'>O kadar</mark> kötü bir insandı <mark class='hl'>ki</mark> ülkenin düşmanlarına yardım etti." },
+                { eng: "<mark class='hl'>This way or that way</mark> we will solve this problem.", tur: "<mark class='hl'>Öyle ya da böyle</mark> bu sorunu çözeceğiz." },
+                { eng: "Five months <mark class='hl'>prior to</mark> the elections they will arrest the mayor of Ankara.", tur: "Seçimlere beş ay <mark class='hl'>kala</mark> Ankara belediye başkanını tutuklayacaklar." },
+                { eng: "<mark class='hl'>At first glance</mark> everybody thought he was a democratic politician.", tur: "<mark class='hl'>İlk bakışta</mark> herkes onun demokratik bir siyasetçi olduğunu düşündü." },
+                { eng: "<mark class='hl'>In the course of time</mark> everybody saw his real face.", tur: "<mark class='hl'>Zamanla</mark> herkes onun gerçek yüzünü gördü." },
+                { eng: "<mark class='hl'>As it seems</mark> our country has big debt.", tur: "<mark class='hl'>Görünen o ki</mark> ülkemizin büyük bir borcu var." },
+                { eng: "My country is <mark class='hl'>on the verge of</mark> a social explosion.", tur: "Ülkem sosyal bir patlamanın <mark class='hl'>eşiğinde</mark>." },
+                { eng: "<mark class='hl'>In a nutshell</mark> young people of Turkey lost their hopes.", tur: "<mark class='hl'>Kısacası</mark> , Türkiye'nin gençleri umutlarını kaybetti." }
+            ],
+            5: [
+                { eng: "She had <mark class='hl'>nothing to do with</mark> football.", tur: "Futbolla <mark class='hl'>hiçbir alakası yoktu</mark> ." },
+                { eng: "<mark class='hl'>It doesn't matter</mark> how much money you pay.", tur: "<mark class='hl'>Ne kadar</mark> para ödediğin <mark class='hl'>fark etmez</mark>" },
+                { eng: "I prefer Japanese cars <mark class='hl'>rather than</mark> German cars.", tur: "Alman arabalarından <mark class='hl'>ziyade</mark> Japon arabalarını tercih ederim." },
+                { eng: "She changed her mind <mark class='hl'>in the blink of the eye</mark>.", tur: "<mark class='hl'>Göz açıp kapayıncaya kadar</mark> fikrini değiştirdi." },
+                { eng: "She lost her credit card <mark class='hl'>upon this</mark> she called the bank.", tur: "Kredi kartını kaybetti, <mark class='hl'>bunun üzerine</mark> bankayı aradı." },
+                { eng: "<mark class='hl'>In expense of</mark> losing her money she was helping the poor.", tur: "Parasını kaybetme <mark class='hl'>pahasına</mark> fakirlere yardım ediyordu." },
+                { eng: "Some people didn't surrender to Akp <mark class='hl'>yet</mark>.", tur: "Bazı insanlar <mark class='hl'>henüz</mark> AKP'ye teslim." },
+                { eng: "I can't listen to him <mark class='hl'>anymore</mark>.", tur: "<mark class='hl'>Artık</mark> onu dinleyemiyorum." },
+                { eng: "<mark class='hl'>No matter what</mark> he does he won't be able to win the elections again.", tur: "<mark class='hl'>Ne yaparsa yapsın</mark>, seçimleri bir daha kazanamayacak." },
+                { eng: "<mark class='hl'>Just like</mark> his father he is a big liar too.", tur: "<mark class='hl'>Tıpkı</mark> babası gibi o da büyük bir yalancı." },
+                { eng: "<mark class='hl'>By the way</mark> he had ordered a new Maybach.", tur: "<mark class='hl'>Bu arada</mark> yeni bir Maybach sipariş etmişti." },
+                { eng: "<mark class='hl'>Not only</mark> his friends <mark class='hl'>but also</mark> his cousins didn't visit him in the hospital.", tur: "<mark class='hl'>Sadece</mark> arkadaşları <mark class='hl'>değil, aynı zamanda</mark> kuzenleri <mark class='hl'>de</mark> onu hastanede ziyaret etmedi." },
+                { eng: "<mark class='hl'>The more</mark> you talk <mark class='hl'>the more</mark> mistakes you make.", tur: "<mark class='hl'>Ne kadar çok</mark> konuşursan <mark class='hl'>o kadar çok</mark> hata yaparsın." },
+                { eng: "A business is <mark class='hl'>the more</mark> dangerous it is <mark class='hl'>the more</mark> profitable.", tur: "Bir iş <mark class='hl'>ne kadar</mark> tehlikeliyse <mark class='hl'>o kadar</mark> kârlıdır." },
+                { eng: "<mark class='hl'>Neither</mark> the USA <mark class='hl'>nor</mark> England can help him.", tur: "Ona <mark class='hl'>ne</mark> ABD <mark class='hl'>ne de</mark> İngiltere yardım edebilir." },
+                { eng: "<mark class='hl'>Keep in mind</mark> <mark class='hl'>as long as</mark> you eat sugar you cannot lose weight.", tur: "Şeker yediğin <mark class='hl'>sürece</mark> kilo veremeyeceğini <mark class='hl'>aklının bir köşesinde bulundur</mark> ." }
+            ],
+            6: [
+                { eng: "Turkey was at better place and people used to respect each other <mark class='hl'>then</mark>.", tur: "Türkiye <mark class='hl'>o zamanlar</mark> daha iyi bir yerdi ve insanlar birbirine saygı gösterirdi." },
+                { eng: "Buy the plane ticket and arrange the hotel never do <mark class='hl'>vice versa</mark>.", tur: "Uçak biletini satın al ve oteli ayarla, sakın <mark class='hl'>tersini</mark> yapma." },
+                { eng: "We have to support the main opposition <mark class='hl'>at once</mark>.", tur: "Ana muhalefeti <mark class='hl'>derhal</mark> desteklemeliyiz." },
+                { eng: "<mark class='hl'>As soon as</mark> the regime changes the politicians will have to leave the country.", tur: "Rejim <mark class='hl'>değişir değişmez</mark> siyasetçiler ülkeyi terk etmek zorunda kalacak." },
+                { eng: "<mark class='hl'>In case</mark> the regime changes many politicians will escape.", tur: "Rejim değişmesi <mark class='hl'>durumunda</mark> birçok siyasetçi kaçacak." },
+                { eng: "An economic crisis is coming <mark class='hl'>that's why</mark> you should save money.", tur: "Ekonomik kriz geliyor, <mark class='hl'>bu yüzden</mark> para biriktirmelisin." },
+                { eng: "The USA helped Khomeini, <mark class='hl'>twist of fate</mark> he fought against the USA.", tur: "ABD Humeyni'ye yardım etti, <mark class='hl'>kaderin bir cilvesi</mark> Humeyni ABD'ye karşı savaştı." },
+                { eng: "<mark class='hl'>In the short term</mark> AKP will hand over the power.", tur: "<mark class='hl'>Kısa vadede</mark> AKP iktidarı devredecek." },
+                { eng: "I don't trust the politicians <mark class='hl'>at all</mark>.", tur: "Siyasetçilere <mark class='hl'>katiyen</mark> güvenmiyorum." },
+                { eng: "<mark class='hl'>Rumor has it</mark> Israel threatens Trump with Epstein files.", tur: "<mark class='hl'>Söylentiye göre</mark> İsrail, Trump'ı Epstein dosyalarıyla tehdit ediyor." },
+                { eng: "<mark class='hl'>It's obvious that</mark> politicians steal money from government.", tur: "Siyasetçilerin devletten para çaldığı <mark class='hl'>bariz belli</mark>." },
+                { eng: "<mark class='hl'>Regardless of</mark> people's political views, justice is necessary for everybody.", tur: "İnsanların siyasi görüşlerini <mark class='hl'>göz önünde bulundurmaksızın</mark>, adalet herkes için gereklidir." },
+                { eng: "We shouldn't have trusted him <mark class='hl'>in the first place</mark>.", tur: "Ona <mark class='hl'>en başta</mark> güvenmemeliydik." },
+                { eng: "<mark class='hl'>Let me know</mark> when you change your mind.", tur: "Fikrini değiştirdiğinde <mark class='hl'>bana haber ver</mark>." },
+                { eng: "<mark class='hl'>As I said before</mark> there isn't any honest politician.", tur: "<mark class='hl'>Daha önce de söylediğim gibi</mark>, hiç dürüst siyasetçi yok." },
+                { eng: "Placeholder Card 96 (Pending final sentence)", tur: "Placeholder Card 96" }
+            ],
+            7: [{ eng: "Placeholder Set 7", tur: "Placeholder Set 7" }],
+            8: [{ eng: "Placeholder Set 8", tur: "Placeholder Set 8" }]
+        };
+
+        let dashboardStats = {
+            1: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            2: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            3: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            4: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            5: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            6: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            7: { attempts: 0, highCorrect: 0, bestPercent: 0 },
+            8: { attempts: 0, highCorrect: 0, bestPercent: 0 }
+        };
+
+        let currentActiveSet = 1;
+        let flashcards = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let isInverted = false;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let answerHistory = [];
+        let failedCards = [];
+
+        const cardText = document.getElementById('card-text');
+        const cardContainer = document.getElementById('card-container');
+        const scoreCorrectEl = document.getElementById('score-correct');
+        const scoreIncorrectEl = document.getElementById('score-incorrect');
+        const endScreenEl = document.getElementById('end-screen');
+        const invertBtn = document.getElementById('invert-btn');
+        const landingPageEl = document.getElementById('landing-page');
+        const gameInterfaceEl = document.getElementById('game-interface');
+        const studyTitleEl = document.getElementById('study-title');
+
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function loadSet(setNum) {
+            currentActiveSet = setNum;
+            flashcards = shuffleArray(allSets[setNum]);
+            currentIndex = 0; isFlipped = false; correctCount = 0; incorrectCount = 0; answerHistory = []; failedCards = [];
+            landingPageEl.style.display = 'none';
+            endScreenEl.style.display = 'none';
+            gameInterfaceEl.style.display = 'flex';
+            cardContainer.style.display = 'flex';
+            document.getElementById('stats').style.display = 'block';
+            document.getElementById('bottom-controls').style.display = 'flex';
+            document.getElementById('top-left-controls').style.display = 'flex';
+            studyTitleEl.style.display = 'block';
+            
+            document.body.style.minHeight = "100vh";
+            document.body.style.overflow = "hidden"; 
+
+            updateDisplay();
+        }
+
+        function goToMenu() {
+            gameInterfaceEl.style.display = 'none';
+            landingPageEl.style.display = 'block';
+            
+            document.body.style.overflowX = "hidden";
+            document.body.style.overflowY = "auto";
+            
+            updateButtonStats();
+        }
+
+        function updateDisplay() {
+            if (currentIndex < flashcards.length) {
+                const showTurkish = isInverted ? !isFlipped : isFlipped;
+                if (showTurkish) {
+                    cardText.innerHTML = flashcards[currentIndex].tur;
+                    cardText.style.color = "#39ff14";
+                    cardContainer.style.backgroundColor = "#111111";
+                    cardContainer.style.borderColor = "#00ffff"; 
+                } else {
+                    cardText.innerHTML = flashcards[currentIndex].eng;
+                    cardText.style.color = "#ffffff";
+                    cardContainer.style.backgroundColor = "#000000";
+                    cardContainer.style.borderColor = "#ff0000"; 
+                }
+                studyTitleEl.innerText = `Studying: Set ${currentActiveSet} - Card ${currentIndex + 1} of ${flashcards.length} (Attempted: ${correctCount + incorrectCount})`;
+                scoreCorrectEl.innerText = correctCount;
+                scoreIncorrectEl.innerText = incorrectCount;
+            } else { showEndScreen(); }
+        }
+
+        function flipCard() { if (currentIndex < flashcards.length) { isFlipped = !isFlipped; updateDisplay(); } }
+        function toggleInversion() { isInverted = !isInverted; invertBtn.innerText = isInverted ? "Mode: Tur -> Eng" : "Mode: Eng -> Tur"; isFlipped = false; updateDisplay(); }
+
+        function markAnswer(type) {
+            if (currentIndex >= flashcards.length) return;
+            if (type === 'correct') {
+                correctCount++;
+                answerHistory.push({type: 'correct', card: flashcards[currentIndex]});
+            } else {
+                incorrectCount++;
+                failedCards.push(flashcards[currentIndex]);
+                answerHistory.push({type: 'incorrect', card: flashcards[currentIndex]});
+            }
+            isFlipped = false; currentIndex++; updateDisplay();
+        }
+
+        function undoAction() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                const last = answerHistory.pop();
+                if (last.type === 'correct') correctCount--; else { incorrectCount--; failedCards.pop(); }
+                isFlipped = false; updateDisplay();
+            }
+        }
+
+        function showEndScreen() {
+            cardContainer.style.display = 'none'; studyTitleEl.style.display = 'none'; document.getElementById('stats').style.display = 'none';
+            document.getElementById('bottom-controls').style.display = 'none'; document.getElementById('top-left-controls').style.display = 'none';
+            endScreenEl.style.display = 'block';
+
+            let total = correctCount + incorrectCount;
+            let finalPercent = total === 0 ? 0 : Math.round((correctCount / total) * 100);
+            document.getElementById('final-correct').innerText = correctCount;
+            document.getElementById('final-incorrect').innerText = incorrectCount;
+            document.getElementById('final-percentage').innerText = finalPercent + "% Success";
+
+            dashboardStats[currentActiveSet].attempts += 1;
+            if (correctCount > dashboardStats[currentActiveSet].highCorrect) dashboardStats[currentActiveSet].highCorrect = correctCount;
+            if (finalPercent > dashboardStats[currentActiveSet].bestPercent) dashboardStats[currentActiveSet].bestPercent = finalPercent;
+
+            document.getElementById('review-failed').style.display = failedCards.length > 0 ? 'inline-block' : 'none';
+        }
+
+        function startFailedReview() {
+            flashcards = shuffleArray([...new Set(failedCards)]); 
+            failedCards = []; currentIndex = 0; correctCount = 0; incorrectCount = 0; answerHistory = [];
+            endScreenEl.style.display = 'none'; cardContainer.style.display = 'flex';
+            document.getElementById('stats').style.display = 'block'; document.getElementById('bottom-controls').style.display = 'flex';
+            document.getElementById('top-left-controls').style.display = 'flex'; document.getElementById('review-failed').style.display = 'none';
+            studyTitleEl.style.display = 'block'; updateDisplay();
+        }
+
+        function updateButtonStats() {
+            for (let i = 1; i <= 8; i++) {
+                let data = dashboardStats[i];
+                if (data.attempts > 0) {
+                    document.getElementById(`btn-stats-${i}`).innerText = `Attempts: ${data.attempts}\nHigh: ${data.highCorrect} Correct | Best: ${data.bestPercent}%`;
+                }
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
+            if (gameInterfaceEl.style.display === 'flex') {
+                if(e.key === "ArrowUp") flipCard(); if(e.key === "ArrowRight") markAnswer('correct');
+                if(e.key === "ArrowLeft") markAnswer('incorrect'); if(e.key === "ArrowDown") undoAction();
+            }
+        });
+    </script>
+</body>
+</html>
