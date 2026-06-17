@@ -134,19 +134,19 @@
 
         /* Massive Fonts & Perfect Halves */
         #question-text, #answer-text { 
-            font-size: 48px; /* Increased font size */
-            font-weight: bold; line-height: 1.2; width: 100%; 
-            flex: 1; /* Takes up exactly 50% of the card */
+            font-size: 48px; 
+            font-weight: bold; line-height: 1.3; width: 100%; 
+            flex: 1; 
             display: flex; align-items: center; justify-content: center; 
         }
 
         /* The Red Divider - Perfectly Centered */
         #card-divider {
             width: 100%; height: 6px; background-color: #ff0000; border: none; margin: 0; box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); border-radius: 3px;
-            visibility: hidden; /* Visually hidden but structurally takes space */
+            visibility: hidden; 
         }
 
-        .hl { background-color: #ffff00; color: #000000; text-shadow: none; padding: 0 5px; border-radius: 5px; font-weight: 900; }
+        .hl { background-color: #ffff00; color: #000000; text-shadow: none; padding: 0 5px; border-radius: 5px; font-weight: 900; display: inline-block; }
 
         #bottom-controls { position: absolute; bottom: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; z-index: 10; }
         .action-btn { background: #222222; color: #ffffff; border: 2px solid #ff0000; padding: 12px 18px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; flex: 1 1 auto; max-width: 150px; text-align: center; }
@@ -159,7 +159,7 @@
             .menu-grid { grid-template-columns: 1fr 1fr; } 
             .set-btn { font-size: 22px; }
             #card-container { height: 450px; padding: 15px 20px; }
-            #question-text, #answer-text { font-size: 32px; } /* Large mobile fonts */
+            #question-text, #answer-text { font-size: 32px; } 
             .action-btn { font-size: 14px; } 
             #study-title { font-size: 18px; top: 90px; }
         }
@@ -167,6 +167,7 @@
 </head>
 <body>
 
+    <!-- Landing Page (Main Menu) -->
     <div id="landing-page">
         <h1>Select Study Set</h1>
         <div class="menu-grid">
@@ -213,6 +214,7 @@
         </div>
     </div>
 
+    <!-- Active App Interface -->
     <div id="game-interface">
         <div id="study-title">Studying: Card 0 of 0 (Attempted: 0)</div>
         <div id="top-left-controls">
@@ -225,10 +227,11 @@
             <span class="incorrect-text">Incorrect: <span id="score-incorrect">0</span></span>
         </div>
         
+        <!-- Upgraded Dynamic Card Container -->
         <div id="card-container" onclick="flipCard()">
-            <div id="question-text">Loading...</div>
+            <div id="question-text"><span>Loading...</span></div>
             <hr id="card-divider">
-            <div id="answer-text"></div>
+            <div id="answer-text"><span></span></div>
         </div>
 
         <div id="bottom-controls">
@@ -446,13 +449,13 @@
                 const bottomColor = isInverted ? "#39ff14" : "#ffffff";
                 const bottomShadow = isInverted ? "0 0 10px rgba(57, 255, 20, 0.5)" : "0 0 10px rgba(255, 255, 255, 0.5)";
 
-                // Apply Top Text
-                questionEl.innerHTML = topText;
+                // Apply Top Text with wrapper fix to prevent flexbox from breaking highlights
+                questionEl.innerHTML = `<span>${topText}</span>`;
                 questionEl.style.color = topColor;
                 questionEl.style.textShadow = topShadow;
 
-                // Apply Bottom Text
-                answerEl.innerHTML = bottomText;
+                // Apply Bottom Text with wrapper fix
+                answerEl.innerHTML = `<span>${bottomText}</span>`;
                 answerEl.style.color = bottomColor;
                 answerEl.style.textShadow = bottomShadow;
 
