@@ -161,7 +161,6 @@
 </head>
 <body>
 
-    <!-- Landing Page (Main Menu) -->
     <div id="landing-page">
         <h1>Select Study Set</h1>
         <div class="menu-grid">
@@ -208,7 +207,6 @@
         </div>
     </div>
 
-    <!-- Active App Interface -->
     <div id="game-interface">
         <div id="study-title">Studying: Card 0 of 0 (Attempted: 0)</div>
         <div id="top-left-controls">
@@ -221,7 +219,6 @@
             <span class="incorrect-text">Incorrect: <span id="score-incorrect">0</span></span>
         </div>
         
-        <!-- Updated Dual-Display Card Container -->
         <div id="card-container" onclick="flipCard()">
             <div id="question-text">Loading...</div>
             <hr id="card-divider">
@@ -251,7 +248,7 @@
                 { eng: "<mark class='hl'>Somehow</mark>, we will close this debt.", tur: "<mark class='hl'>Bir şekilde</mark> bu borcu kapatacağız." },
                 { eng: "The taxi driver took the long road <mark class='hl'>on purpose</mark>.", tur: "Taksi şoförü <mark class='hl'>kasten</mark> uzun yoldan gitti." },
                 { eng: "She could stay under the water for 20 minutes <mark class='hl'>without breathing</mark>.", tur: "<mark class='hl'>Nefes almadan</mark> 20 dakika suyun altında kalabiliyordu." },
-                { eng: "<mark class='hl'>Now</mark>, I can live in another country.", tur: "<mark class='hl'>Şimdi artık</mark> başka bir ülkede yaşayabilirim." },
+                { eng: "<mark class='hl'>Now</mark>, I can live in another country.", tur: "<mark class='hl'>Artık</mark> başka bir ülkede yaşayabilirim." },
                 { eng: "He didn't <mark class='hl'>ever</mark> go abroad.", tur: "<mark class='hl'>Hiç</mark> yurtdışına çıkmadı." },
                 { eng: "We can live <mark class='hl'>everywhere but</mark> Turkey.", tur: "<mark class='hl'>Türkiye hariç</mark> her yerde yaşayabiliriz." },
                 { eng: "Some politicians are <mark class='hl'>as</mark> dangerous <mark class='hl'>as</mark> snakes.", tur: "Bazı politikacılar yılanlar <mark class='hl'>kadar</mark> tehlikelidir." },
@@ -284,7 +281,7 @@
             ],
             3: [
                 { eng: "<mark class='hl'>Based on</mark> the FBI files, the USA Ambassador in Turkey is on Epstein files.", tur: "FBI dosyalarına <mark class='hl'>dayanarak</mark>, Türkiye'deki ABD Büyükelçisi Epstein dosyalarında." },
-                { eng: "It <mark class='hl'>depends on</mark> plane prices if we will go on holiday.", tur: "Tatile gidip gidemeyeceğimiz uçak fiyatlarına <mark class='hl'>bağlıdır</mark>." },
+                { eng: "If we will go on holiday, it <mark class='hl'>depends on</mark> the plane prices.", tur: "Tatile gidip gidemeyeceğimiz uçak fiyatlarına <mark class='hl'>bağlıdır</mark>." },
                 { eng: "The government can check every financial transaction <mark class='hl'>via</mark> MASAK.", tur: "Hükümet her finansal işlemi MASAK <mark class='hl'>aracılığıyla</mark> kontrol edebilir." },
                 { eng: "<mark class='hl'>Keep me posted</mark> until you check in your hotel.", tur: "Otele giriş yapana kadar beni <mark class='hl'>haberdar et</mark>." },
                 { eng: "You should put money in your account and apply for visa <mark class='hl'>respectively</mark>; never vice versa.", tur: "<mark class='hl'>Sırasıyla</mark> hesabınıza para koymalı ve vizeye başvurmalısınız; asla tam tersi değil." },
@@ -521,29 +518,4 @@
 
         function startFailedReview() {
             flashcards = shuffleArray([...new Set(failedCards)]); 
-            failedCards = []; currentIndex = 0; correctCount = 0; incorrectCount = 0; answerHistory = [];
-            endScreenEl.style.display = 'none'; cardContainer.style.display = 'flex';
-            document.getElementById('stats').style.display = 'block'; document.getElementById('bottom-controls').style.display = 'flex';
-            document.getElementById('top-left-controls').style.display = 'flex'; document.getElementById('review-failed').style.display = 'none';
-            studyTitleEl.style.display = 'block'; updateDisplay();
-        }
-
-        function updateButtonStats() {
-            for (let i = 1; i <= 8; i++) {
-                let data = dashboardStats[i];
-                if (data.attempts > 0) {
-                    document.getElementById(`btn-stats-${i}`).innerText = `Attempts: ${data.attempts}\nHigh: ${data.highCorrect} Correct | Best: ${data.bestPercent}%`;
-                }
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
-            if (gameInterfaceEl.style.display === 'flex') {
-                if(e.key === "ArrowUp") flipCard(); if(e.key === "ArrowRight") markAnswer('correct');
-                if(e.key === "ArrowLeft") markAnswer('incorrect'); if(e.key === "ArrowDown") undoAction();
-            }
-        });
-    </script>
-</body>
-</html>
+            failedCards = []; currentIndex = 0
