@@ -518,4 +518,29 @@
 
         function startFailedReview() {
             flashcards = shuffleArray([...new Set(failedCards)]); 
-            failedCards = []; currentIndex = 0
+            failedCards = []; currentIndex = 0; correctCount = 0; incorrectCount = 0; answerHistory = [];
+            endScreenEl.style.display = 'none'; cardContainer.style.display = 'flex';
+            document.getElementById('stats').style.display = 'block'; document.getElementById('bottom-controls').style.display = 'flex';
+            document.getElementById('top-left-controls').style.display = 'flex'; document.getElementById('review-failed').style.display = 'none';
+            studyTitleEl.style.display = 'block'; updateDisplay();
+        }
+
+        function updateButtonStats() {
+            for (let i = 1; i <= 8; i++) {
+                let data = dashboardStats[i];
+                if (data.attempts > 0) {
+                    document.getElementById(`btn-stats-${i}`).innerText = `Attempts: ${data.attempts}\nHigh: ${data.highCorrect} Correct | Best: ${data.bestPercent}%`;
+                }
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
+            if (gameInterfaceEl.style.display === 'flex') {
+                if(e.key === "ArrowUp") flipCard(); if(e.key === "ArrowRight") markAnswer('correct');
+                if(e.key === "ArrowLeft") markAnswer('incorrect'); if(e.key === "ArrowDown") undoAction();
+            }
+        });
+    </script>
+</body>
+</html>
