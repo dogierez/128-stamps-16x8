@@ -124,20 +124,26 @@
         .correct-text { color: #28a745; }
         .incorrect-text { color: #dc3545; }
 
-        /* Dynamic Expanding Card Container */
+        /* Perfect 50/50 Expanding Card Container */
         #card-container {
-            width: 90%; max-width: 900px; min-height: 350px; height: auto; background-color: #000000; border: 5px solid #ff0000; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; padding: 50px 30px; cursor: pointer; margin-bottom: 100px; position: relative; z-index: 5; transition: border-color 0.3s ease;
+            width: 95%; max-width: 1000px; 
+            height: 500px; /* Fixed tall height so it never jumps */
+            background-color: #000000; border: 5px solid #ff0000; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px 40px; cursor: pointer; margin-bottom: 100px; position: relative; z-index: 5; transition: border-color 0.3s ease;
         }
 
-        /* Massive Static Fonts that won't shrink */
+        /* Massive Fonts & Perfect Halves */
         #question-text, #answer-text { 
-            font-size: 40px; font-weight: bold; line-height: 1.3; width: 100%; 
+            font-size: 48px; /* Increased font size */
+            font-weight: bold; line-height: 1.2; width: 100%; 
+            flex: 1; /* Takes up exactly 50% of the card */
+            display: flex; align-items: center; justify-content: center; 
         }
-        
-        /* The Red Divider */
+
+        /* The Red Divider - Perfectly Centered */
         #card-divider {
-            width: 90%; height: 6px; background-color: #ff0000; border: none; margin: 35px 0; display: none; box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); border-radius: 3px;
+            width: 100%; height: 6px; background-color: #ff0000; border: none; margin: 0; box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); border-radius: 3px;
+            visibility: hidden; /* Visually hidden but structurally takes space */
         }
 
         .hl { background-color: #ffff00; color: #000000; text-shadow: none; padding: 0 5px; border-radius: 5px; font-weight: 900; }
@@ -152,8 +158,8 @@
         @media (max-width: 768px) {
             .menu-grid { grid-template-columns: 1fr 1fr; } 
             .set-btn { font-size: 22px; }
-            #question-text, #answer-text { font-size: 28px; } /* Consistent massive mobile fonts */
-            #card-divider { margin: 25px 0; }
+            #card-container { height: 450px; padding: 15px 20px; }
+            #question-text, #answer-text { font-size: 32px; } /* Large mobile fonts */
             .action-btn { font-size: 14px; } 
             #study-title { font-size: 18px; top: 90px; }
         }
@@ -450,14 +456,14 @@
                 answerEl.style.color = bottomColor;
                 answerEl.style.textShadow = bottomShadow;
 
-                // Reveal Logic
+                // Opacity Trick for Anti-Jump Reveal Logic
                 if (isFlipped) {
-                    dividerEl.style.display = "block";
-                    answerEl.style.display = "block";
+                    dividerEl.style.visibility = "visible";
+                    answerEl.style.visibility = "visible";
                     cardContainer.style.borderColor = "#00ffff"; 
                 } else {
-                    dividerEl.style.display = "none";
-                    answerEl.style.display = "none";
+                    dividerEl.style.visibility = "hidden";
+                    answerEl.style.visibility = "hidden";
                     cardContainer.style.borderColor = "#ff0000"; 
                 }
 
