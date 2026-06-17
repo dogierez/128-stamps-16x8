@@ -28,7 +28,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             border: 5px solid #ff0000;
             width: 95%;
-            max-width: 900px; /* Widened to accommodate 4 columns */
+            max-width: 900px; 
             z-index: 10;
         }
 
@@ -38,7 +38,7 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
 
-        /* Responsive 8-Button Grid (Desktop: 4x2, Mobile: 2x4) */
+        /* Responsive 8-Button Grid */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -63,15 +63,15 @@
             border: none;
         }
 
-        /* 8 Distinct Filled Solid Fancy Color Backgrounds */
-        .btn-set1 { background-color: #00cbcb; } /* Cyan */
-        .btn-set2 { background-color: #ff9f43; } /* Orange */
-        .btn-set3 { background-color: #ff007f; } /* Magenta */
-        .btn-set4 { background-color: #8a2be2; } /* Purple */
-        .btn-set5 { background-color: #39ff14; } /* Neon Green */
-        .btn-set6 { background-color: #ff3333; } /* Bright Red */
-        .btn-set7 { background-color: #1e90ff; } /* Dodger Blue */
-        .btn-set8 { background-color: #ffbf00; } /* Amber Yellow */
+        /* Filled Solid Fancy Color Backgrounds */
+        .btn-set1 { background-color: #00cbcb; } 
+        .btn-set2 { background-color: #ff9f43; } 
+        .btn-set3 { background-color: #ff007f; } 
+        .btn-set4 { background-color: #8a2be2; } 
+        .btn-set5 { background-color: #39ff14; } 
+        .btn-set6 { background-color: #ff3333; } 
+        .btn-set7 { background-color: #1e90ff; } 
+        .btn-set8 { background-color: #ffbf00; } 
 
         .set-btn:hover {
             transform: scale(1.04);
@@ -140,7 +140,7 @@
         .review-btn { background: #00ffff; color: #000; border: none; padding: 15px 30px; font-size: 20px; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 20px; display: none; }
 
         @media (max-width: 768px) {
-            .menu-grid { grid-template-columns: 1fr 1fr; } /* Stack to 2 columns on mobile/tablets */
+            .menu-grid { grid-template-columns: 1fr 1fr; } 
             .set-btn { font-size: 22px; }
             #card-text { font-size: 28px; } 
             .action-btn { font-size: 14px; } 
@@ -229,7 +229,6 @@
     </div>
 
     <script>
-        // Database perfectly split into 16 items per set
         const allSets = {
             1: [
                 { eng: "You should <mark class='hl'>either</mark> save money <mark class='hl'>or</mark> sell your house.", tur: "Ya para biriktirmelisin <mark class='hl'>ya da</mark> evini satmalısın." },
@@ -337,7 +336,7 @@
                 { eng: "We shouldn't have trusted him <mark class='hl'>in the first place</mark>.", tur: "Ona <mark class='hl'>en başta</mark> güvenmemeliydik." },
                 { eng: "<mark class='hl'>Let me know</mark> when you change your mind.", tur: "Fikrini değiştirdiğinde <mark class='hl'>bana haber ver</mark>." },
                 { eng: "<mark class='hl'>As I said before</mark> there isn't any honest politician.", tur: "<mark class='hl'>Daha önce de söylediğim gibi</mark>, hiç dürüst siyasetçi yok." },
-                { eng: "Placeholder Card 96 (Pending final sentence)", tur: "Placeholder Card 96" }
+                { eng: "England exited the EU, <mark class='hl'>so did</mark> Ireland.", tur: "İngiltere AB'den ayrıldı, İrlanda <mark class='hl'>da öyle yaptı</mark>." }
             ],
             7: [{ eng: "Placeholder Set 7", tur: "Placeholder Set 7" }],
             8: [{ eng: "Placeholder Set 8", tur: "Placeholder Set 8" }]
